@@ -115,8 +115,14 @@
       const verseDisplay = document.getElementById("verseDisplay");
       verseDisplay.textContent = verse;
       verseDisplay.style.animation = 'none';
-      verseDisplay.offsetHeight;
+      verseDisplay.offsetHeight; // Reinicia la animación
       verseDisplay.style.animation = null;
+      verseDisplay.style.opacity = '0.8'; // Asegura que sea visible
+
+      setTimeout(() => {
+        verseDisplay.style.opacity = '0'; // Desaparece después de 3 segundos
+        verseDisplay.textContent = ''; // Elimina el texto después de desaparecer
+      }, 3000);
     }
 
     function movePlayer(dx, dy) {
@@ -128,7 +134,7 @@
         if (map[ny][nx] === 1) {
           map[ny][nx] = 0;
           collectedDots++;
-          if (collectedDots % 10 === 0) {
+          if (collectedDots % 20 === 0) { // Cambiado a 20 bolitas
             showVerse();
           }
         }

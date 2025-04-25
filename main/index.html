@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fantasma Game</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: black;
+      color: white;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      background: black;
+    }
+    .verse {
+      position: absolute;
+      top: 10%;
+      width: 100%;
+      text-align: center;
+      font-size: 1.2em;
+      color: white;
+      opacity: 0.5;
+      animation: fade 2s ease-in-out;
+    }
+    @keyframes fade {
+      0% { opacity: 0; }
+      50% { opacity: 0.8; }
+      100% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas"></canvas>
+  <div class="verse" id="verseDisplay"></div>
+
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 560;
+    canvas.height = 400;
+
+    const gridSize = 20;
+    const rows = canvas.height / gridSize;
+    const cols = canvas.width / gridSize;
+
+    const map = [];
+    for (let y = 0; y < rows; y++) {
+      map[y] = [];
+      for (let x = 0; x < cols; x++) {
+        map[y][x] = Math.random() > 0.2 ? 1 : 0;
+      }
+    }
+
+    const player = { x: 14, y: 10 };
+    const verses = [
+      'Mejor quedarse quieto...',
+      'Y esperar...',
+      'Por favor perdona...',
+      'En caída libre...',
+      'No soy libre...',
+      'Nubazón, nubazón...',
+      'Pasara...',
+      'Pasara...',
+      'La hondonada nos dejo sin caricias...',
+      'Y varias noches sin poder...',
+      'Fatalismo inútil...',
+      'Ignorar temores...',
+      'Me muero por creer que es posible...',
+      'Seamos amigos...',
+      'O la vida sentirá aún más frío...',
+      'Y el fantasma no podrá...',
+      'Dormir...',
+    ];
+
+    function drawMap() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let y = 0; y < rows; y++) {
+        for (let x = 0; x < cols; x++) {
+          if (map[y][x] === 1) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(x * gridSize + 8, y * gridSize + 8, 4, 4);
+          }
+        }
+      }
+    }
+
+    function drawPlayer() {
+      ctx.beginPath();
+      ctx.arc(
+        player.x * gridSize + gridSize / 2,
+        player.y * gridSize + gridSize / 2,
+        gridSize / 2.5,
+        0,
+        Math.PI * 2
+      );
+      ctx.fillStyle = "white";
+      ctx.fill();
+    }
+
+    function drawGame() {
+      drawMap();
+      drawPlayer();
+    }
+
+    function showVerse() {
+      const verse = verses[Math.floor(Math.random() * verses.length)];
+      const verseDisplay = document.getElementById("verseDisplay");
+      verseDisplay.textContent = verse;
+      verseDisplay.style.animation = 'none';
+      verseDisplay.offsetHeight;
+      verseDisplay.style.animation = null;
+    }
+
+    function movePlayer(dx, dy) {
+      const nx = player.x + dx;
+      const ny = player.y + dy;
+      if (map[ny] && map[ny][nx] !== undefined) {
+        player.x = nx;
+        player.y = ny;
+        if (map[ny][nx] === 1) {
+          map[ny][nx] = 0;
+          showVerse();
+        }
+        drawGame();
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowUp") movePlayer(0, -1);
+      if (e.key === "ArrowDown") movePlayer(0, 1);
+      if (e.key === "ArrowLeft") movePlayer(-1, 0);
+      if (e.key === "ArrowRight") movePlayer(1, 0);
+    });
+
+    drawGame();
+  </script>
+</body>
+</html>

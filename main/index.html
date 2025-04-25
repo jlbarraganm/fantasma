@@ -78,6 +78,8 @@
       'Dormir...',
     ];
 
+    let collectedDots = 0; // Contador de bolitas recogidas
+
     function drawMap() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let y = 0; y < rows; y++) {
@@ -125,7 +127,10 @@
         player.y = ny;
         if (map[ny][nx] === 1) {
           map[ny][nx] = 0;
-          showVerse();
+          collectedDots++;
+          if (collectedDots % 10 === 0) {
+            showVerse();
+          }
         }
         drawGame();
       }
